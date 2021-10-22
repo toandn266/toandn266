@@ -261,8 +261,7 @@
     </div>
 </div>
 <div style="display: inline-block; position: absolute; top: 0; z-index: 999999; right: 0">
-    <audio id="track" loop>
-        <source src="hpny.mp3" type="audio/mpeg" />
+    <audio id="audioplayer">
     </audio>
     <div id="player-container">
         <div id="play-pause" class="play">Play</div>
@@ -316,24 +315,34 @@
         }, 5000)
     }
 
-    var track = document.getElementById('track');
     var controlBtn = document.getElementById('play-pause');
-    function playPause() {
-        if (track.paused) {
-            track.play();
-            //controlBtn.textContent = "Pause";
-            controlBtn.className = "pause";
-        } else {
-            track.pause();
-            //controlBtn.textContent = "Play";
-            controlBtn.className = "play";
+	var lastSong = null;
+    var selection = null;
+    var playlist = ["hpny.mp3", "hpny2.mp3", "hpny3.mp3"]; // List of songs
+    var player = document.getElementById("audioplayer"); // Get audio element
+    player.autoplay=true;
+    player.addEventListener("ended", selectRandom); // Run function when the song ends
+
+    function selectRandom(){
+        while(selection == lastSong){ // Repeat until a different song is selected
+            selection = Math.floor(Math.random() * playlist.length);
         }
+        lastSong = selection; // Remember the last song
+        player.src = playlist[selection]; // Tell HTML the location of the new song
     }
 
-    controlBtn.addEventListener("click", playPause);
-    track.addEventListener("ended", function() {
-        controlBtn.className = "play";
-    });
+    selectRandom(); // Select initial song
+	controlBtn.addEventListener("click", function() {
+		if (player.paused) {
+            player.play();
+            controlBtn.className = "pause";
+        } else {
+            player.pause();
+            controlBtn.className = "play";
+           
+        }
+	
+	});
 </script>
 </body>
 </html>
